@@ -1,0 +1,1 @@
+Demo tekst naložen s statične ~/text/test.txt datoteke..

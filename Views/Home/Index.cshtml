@@ -1,19 +1,26 @@
-﻿<link rel="stylesheet" href="~/css/home_index.css" />
+﻿<!--<link rel="stylesheet" href="~/css/home_index.css" />-->
 
 @{
     ViewData["Title"] = "Home Page";
 }
+
+<environment include="Development">
+<h1 class="devmode">DEVELOPMENT MODE</h1>
+</environment>
 
 @model IEnumerable<CS_webapp.Models.Category>
 
 <div class="container p-3">
     <div class="row pt-4">
         <div class="col-6">
-            <h2 class="text-primary">Category List <span style="font-size:18px">(@Model.Count() items)</span></h2>
+            <h2 class="text-primary">Registrirani uporabniki <span style="font-size:18px">(@Model.Count() items)</span></h2>
         </div>
         <div class="col-6 text-right">
         <a asp-controller="Home" asp-action="Create" class="btn btn-primary">
-            <i class="fas fa-plus"></i> &nbsp;Add New Category
+            <i class="fas fa-plus"></i> &nbsp;Dodaj uporabnika
+        </a>
+        <a asp-controller="Home" asp-action="Login" class="btn btn-primary">
+            <i class="fas fa-arrow-right"></i> &nbsp;LOGIN
         </a>
         </div>
     </div>
@@ -26,9 +33,12 @@
     <table class="table table-bordered table-striped text-center">
         <thead>
             <tr>
-                <th>Ime</th>
-                <th>Številka naročila</th>
-                <th>Uredi &nbsp;&nbsp; / &nbsp;&nbsp; Izbriši</th>
+                <th style="width:25%">Uporabniško ime</th>
+                <!--<th>Geslo (MD5 hashed)</th>-->
+                <th>Registracija</th>
+                <th>Sprememba gesla</th>
+                <th>Zadnji login</th>
+                <th style="width:25%">Novo geslo &nbsp;&nbsp; / &nbsp;&nbsp; Izbriši uporabnika</th>
 
             </tr>
         </thead>
@@ -37,15 +47,19 @@
             {
                 <tr>
                     <td style="vertical-align:middle; font-size:20px">@obj.Name</td>
-                    <td style="vertical-align:middle; font-size:20px">@obj.DisplayOrder</td>
+                    <!--<td style="vertical-align:middle; font-size:20px">@obj.DisplayOrder</td>-->
+                    <td style="vertical-align:middle; font-size:20px">@obj.InitDate</td>
+                    <td style="vertical-align:middle; font-size:20px">@obj.ResetDate</td>
+                    <td style="vertical-align:middle; font-size:20px">@obj.LastDate</td>
+                    
                     <td class="text-center">
                         <div class="w-15 btn-group" role="group">
-                            <a asp-controller="Home" asp-route-Id="@obj.Id" asp-action="Edit" class="btn btn-primary mx-4">
-                                <i class="far fa-edit"></i> &nbsp; Edit
+                            <a asp-controller="Home" asp-route-Id="@obj.Id" asp-action="Reset" class="btn btn-primary mx-4">
+                                <i class="far fa-edit"></i> &nbsp; Reset
                             </a>
                         </div>
                             <a asp-controller="Home" asp-route-Id="@obj.Id" asp-action="Delete">
-                                <img src="~/img/smetnjak.png" style="width:5%;height:5%" />
+                                <img src="~/img/smetnjak.png" style="width:10%;height:10%" />
                             </a>
                         
                     </td>
@@ -59,5 +73,5 @@
 else
 {
     <h4><br></br></h4>
-    <h4 class="text-center" style="font-size:17px">Category list is empty!</h4>
+    <h4 class="text-center" style="font-size:17px">Seznam uporabnikov je prazen!</h4>
 }

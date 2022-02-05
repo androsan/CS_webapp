@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Login to Secret Database";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Prosim, vnesi uporabniško ime in geslo!</p>
+
+
+<!--Using TUPLE logic to use multiple models in a single View-->
+@*
+@using CS_webapp.Models;
+@model Tuple<Category,LoginModel>
+
+@using (Html.BeginForm("Login", "Auth", FormMethod.Post))
+{
+        //@Html.TextBoxFor(tuple => tuple.Item2.UserName, new {@Name="UserName"})
+        //@Html.TextBoxFor(tuple => tuple.Item2.Password, new {@Name="Password"})
+}
+
+
+
+<h1>@Model</h1>
+<h4>DisplayOrder from dbo.Category:  @Model.Item1.DisplayOrder</h4>
+*@
+
+@model CS_webapp.Models.BigModel      // Super-cool alternative to tuple of models is to use new class, which contains all submodels
+
+<!--https://stackoverflow.com/questions/4764011/multiple-models-in-a-view-->
+
+<form method="post" asp-action="Login">
+    <!--
+    <input asp-for="Item1.Id" type="hidden" />
+    <input asp-for="Item1.InitDate" type="hidden" />-->
+     
+    <div class="border p-3">
+         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+         
+         <div class="form-group row">
+             <h2 class="text-info pl-3">Login page</h2>
+         </div>
+
+         <div class="row">
+             <div class="col-8">
+                 <div class="form-group row">
+                     <div class="col-4">
+                         <!--<label asp-for="Item2.UserName"></label>-->
+                         <!--<label asp-for="Item1.Name"></label>-->
+                         <!--<label asp-for="Category.Name"></label>-->
+                         <label asp-for="LoginModel.UserName"></label>
+
+                     </div>
+                     <div class="col-8">
+                         <!--<input asp-for="Item2.UserName" class="form-control"/>-->
+                         <!--<input asp-for="Item1.Name" class="form-control"/>-->
+                         <!--<input asp-for="Category.Name" class="form-control"/>-->
+                         <input asp-for="LoginModel.UserName" class="form-control"/>
+
+                         <label>@TempData["user_error"]</label>
+                         <!--<span asp-validation-for="Item2.UserName" class="text-danger"></span>-->
+                         <!--<span asp-validation-for="Item1.Name" class="text-danger"></span>-->
+                         <!--<span asp-validation-for="Category.Name" class="text-danger"></span>-->
+                         <span asp-validation-for="LoginModel.UserName" class="text-danger"></span>
+
+                     </div>
+                     
+                     
+                 </div>
+
+                 <div class="form-group row">
+                     <div class="col-4">
+                     <!--<label asp-for="Item2.Password"></label>-->
+                     <!--<label asp-for="Item1.DisplayOrder"></label>-->
+                     <!--<label asp-for="Category.DisplayOrder"></label>-->
+                     <label asp-for="LoginModel.Password"></label>
+
+                     </div>
+                     <div class="col-8">
+                     <!--<input asp-for="Item2.Password" class="form-control"/>-->
+                     <!--<input asp-for="Item1.DisplayOrder" class="form-control"/>-->
+                     <!--<input asp-for="Category.DisplayOrder" class="form-control"/>-->
+                     <input asp-for="LoginModel.Password" class="form-control"/>
+
+
+                     <p>@TempData["password_error"]</p>
+                     <!--<span asp-validation-for="Item2.Password" class="text-danger"></span>-->
+                     <!--<span asp-validation-for="Item1.DisplayOrder" class="text-danger"></span>-->
+                     <!--<span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>-->
+                     <span asp-validation-for="LoginModel.Password" class="text-danger"></span>
+                     </div>
+                 </div>
+
+                  <div class="form-group row">
+                      <div class="col-8 offset-4 row">
+                          <div class="col">
+                              <input type="submit" class="btn btn-info w-100" value="Login"/>
+                          </div>
+                          <div class="col">
+                              <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-arrow-left"></i> &nbsp; Category List</a>
+                          </div>
+                      </div>
+                  </div>
+             </div>
+         </div>
+     </div>
+
+
+
+</form>
+
+@section Scripts{
+    @{ <partial name="_ValidationScriptsPartial" />}
+} 

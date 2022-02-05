@@ -10,5 +10,7 @@ namespace CS_webapp.Data
 
         }
     public DbSet<Category> Category { get; set; }
+
     }
+
 }
