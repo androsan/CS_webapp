@@ -1,6 +1,6 @@
 ﻿@model CS_webapp.Models.Category
 
-<form method="post" asp-action="DeletePost">
+<form method="post" asp-action="DeletePost" onSubmit="DeleteUser('@Model.Name')">
     <input asp-for="Id" type="hidden" />
      <div class="border p-3">
          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -53,7 +53,7 @@
 
 </form>
 
-<button id="delete_object_btn" onclick="DeleteUser('@Model.Name')">Delete File</button>
+<!--<button id="delete_object_btn" onclick="DeleteUser('@Model.Name')">Delete File</button>-->
 
 @section Scripts{
     @{ <partial name="_ValidationScriptsPartial" />}
