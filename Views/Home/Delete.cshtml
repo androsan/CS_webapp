@@ -16,7 +16,11 @@
                          <label asp-for="Name"></label>
                      </div>
                      <div class="col-8">
-                         <input asp-for="Name" class="form-control"/>
+
+                         <!--<input asp-for="Name" class="form-control"/>-->
+                         <!--<h4 class="form-control">zjtzuizujkz</h4>-->
+                         <h4>@Model.Name</h4>
+
                          <span asp-validation-for="Name" class="text-danger"></span>
                      </div>
                  </div>
@@ -49,6 +53,21 @@
 
 </form>
 
+<button id="delete_object_btn" onclick="DeleteUser('@Model.Name')">Delete File</button>
+
 @section Scripts{
     @{ <partial name="_ValidationScriptsPartial" />}
+    <script type="text/javascript">
+    
+    function DeleteUser(ime){
+        
+	    var result = confirm("Ali res želiš izbrisati uporabnika:  "+ime+" in njegove podatke iz vseh registrov?");
+	    if (result) {
+		    console.log("Uporabnik ",ime," in vsi njegovi podatki so bili uspešno odstranjeni..");
+		    } 
+    
+        //alert("I will only say hello on view.");
+	    }
+    </script>
+
 } 

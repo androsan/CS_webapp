@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Text;
 using System.Dynamic;
 
@@ -69,23 +70,24 @@ namespace CS_webapp.Controllers
         // POST - CREATE
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Category obj)
+        public IActionResult Create(BigModel big)
         {
             if (ModelState.IsValid)
             {
 
                 // Check if username is available
 
-                string _ime = obj.Name;
+                string _ime = big.Category.Name;
                 string user_id_query = "SELECT Id FROM dbo.Category WHERE Name=({0})";
                 var user_id = _db.Category.FromSqlRaw(user_id_query, _ime).Select(abc => abc.Id).ToList();
+                Debug.WriteLine("User_ID old: "+user_id);
 
                 if (user_id.Count() != 0)
                 {
                     Debug.WriteLine($"User {_ime} is already taken.. Please, choose other username!");
                     TempData["user_taken_error"] = "User " + _ime + " is already taken.. Please, choose other username!";
-                    obj.Name = "";
-                    return View(obj);
+                    big.Category.Name = "";
+                    return View(big.Category);
                 }
 
                 else
@@ -94,20 +96,67 @@ namespace CS_webapp.Controllers
                     Debug.WriteLine("HEY! POST - CREATE");
                     using (MD5 MD5Hash = MD5.Create())
                     {
-                        //string DisOrd = obj.DisplayOrder.ToString();
-                        //DisOrd = GetHash(MD5Hash, DisOrd);
-                        //obj.DisplayOrder = int.DisOrd;
-                        obj.DisplayOrder = GetHash(MD5Hash, obj.DisplayOrder);
+                        big.Category.DisplayOrder = GetHash(MD5Hash, big.Category.DisplayOrder);
                     }
                     // ***************************************************************************************************
 
                     //string RegDate = DateTime.Now.ToString("HH:mm:ss tt");
                     DateTime localDate = DateTime.Now;
-                    obj.InitDate = localDate.ToString();
-                    obj.ResetDate = "N/A";   //localDate.ToString();
-                    obj.LastDate = "N/A";       //localDate.ToString();
+                    big.Category.InitDate = localDate.ToString();
+                    
+                    big.Category.ResetDate = "N/A";   //localDate.ToString();
+                    big.Category.LastDate = "N/A";       //localDate.ToString();
+                    //----------------------------------------------------------------------------------------------------
+                    _db.Category.Add(big.Category);   // Id of new row in Category table is generated HERE, not before!
+                    //----------------------------------------------------------------------------------------------------
+                    //~~~~~~~~~~~ Adding row in Podatki table ~~~~~~~~~~~~~~~~~
 
-                    _db.Category.Add(obj);
+                    Debug.WriteLine("big.Category.Name:  "+ big.Category.Name);
+                    
+                    
+                    _db.SaveChanges();
+
+
+                    //................................................
+                    // tukaj sta dve možnosti:
+
+                    // 1. V tabelo big.Podatki dodaš Podatki.Name in Podatki.Secret, vendar bo potem tabela big.Podatki sama
+                    //    generirala Id, ki pa se kasneje morda ne bo ujemal z Id tabele big.Category (brisanje vrstic,..)
+
+                    // 2. Boljša varianta, kjer z SQL poizvedbo pridobiš Id big.Category glede na Name, potem tabeli
+                    //    big.Podatki dodaš ta Id in pripneš pripadajoče ime (Name)
+
+                    var user_id_new = _db.Category.FromSqlRaw(user_id_query, _ime).Select(abc => abc.Id).ToList();
+                    Debug.WriteLine("User_ID new: " + user_id_new[0]);
+
+                    //var pod_new = _db.Podatki.FromSqlRaw("INSERT INTO dbo.Podatki (Id) SELECT Id FROM dbo.Category WHERE Id NOT IN (SELECT Id FROM Podatki)").ToList();
+                    //var pod_new = _db.Podatki.FromSqlRaw("INSERT INTO dbo.Podatki (Id) SELECT Id FROM dbo.Category WHERE Id NOT IN (SELECT Id FROM Podatki)").ToList();
+
+                    //_db.Podatki.FromSqlRaw("INSERT INTO dbo.Podatki ({0})",user_id_new[0]);
+                    //_db.Podatki.FromSqlRaw("INSERT INTO dbo.Podatki (Id) VALUES ({0})", user_id_new[0]);
+                    //_db.SaveChanges();
+
+                    //................................................
+
+                    //var new_row = _db.Podatki.Find(user_id_new[0]);
+                    //var new_row = _db.Podatki.Find(user_id_new[0]);
+                    //new_row.Name = _ime;
+                    //new_row.Secret = "Welcome, " + _ime;
+
+                    //big.Podatki.Name = _ime;
+                    big.Podatki.Name = _ime;
+                    Debug.WriteLine("big.Podatki.Name : "+ big.Podatki.Name);
+                    big.Podatki.Secret = "Welcome, " + _ime;
+                    big.Podatki.Id = user_id_new[0];
+
+                    _db.Podatki.Add(big.Podatki);
+
+                    //big.Podatki.Id = user_id_new[0];
+                    //big.Podatki.Name = _ime;
+                    //big.Podatki.Secret = "Welcome, "+ _ime;
+                    //_db.Podatki.Add(big.Podatki);   
+                    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
                     _db.SaveChanges();
                     return RedirectToAction("Index");
 
@@ -117,9 +166,10 @@ namespace CS_webapp.Controllers
             else
             {
                 Debug.WriteLine("Veljavnost modela pri POST-CREATE:  " + ModelState.IsValid);
-                return View(obj);
+                return View(big.Category);
             }
         }
+
 
         // GET - RESET
         public IActionResult Reset(int? id)
@@ -209,8 +259,12 @@ namespace CS_webapp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj = _db.Category.Find(id);
-            _db.Category.Remove(obj);
+            var obj_cat = _db.Category.Find(id);
+            var obj_pod = _db.Podatki.Find(id);
+
+
+            _db.Category.Remove(obj_cat);
+            _db.Podatki.Remove(obj_pod);
             _db.SaveChanges();
             return RedirectToAction("Index");
         }
@@ -289,7 +343,7 @@ namespace CS_webapp.Controllers
                     Debug.WriteLine("user_id.Count() = " + user_id.Count());
                     Debug.WriteLine($"User {uporabnisko_ime} is not registered in database! Please, enter correct username..");
                     TempData["user_error"] = "User " + uporabnisko_ime + " is not registered in database! Please, enter correct username..";
-                    return View(big.LoginModel);
+                    return View(big);
                 }
 
                 else
@@ -344,28 +398,83 @@ namespace CS_webapp.Controllers
 
 
         // GET - SECRET  
-        public IActionResult SecretData()   //LoginModel obj
+        public IActionResult SecretData() 
         {
-            /*
-            Debug.WriteLine($"GET-SECRET uporabniško ime:   {obj.UserName}");
-            Debug.WriteLine($"GET-SECRET geslo:   {obj.Password}");
 
-            TempData["user"] = obj.UserName;
-            TempData["pass"] = obj.Password;
-            */
+            Debug.WriteLine($"GET-SECRET uporabniško ime:   {TempData["user"]}");
 
-            //Debug.WriteLine("Hashed password in GET-SECRET:  " + obj.DisplayOrder);
-            //Debug.WriteLine(TempData["userID"]);
+            string message_name = TempData["user"].ToString();
+
+            string user_id_query = "SELECT Id FROM dbo.Podatki WHERE Name=({0})";
+            var user_id = _db.Podatki.FromSqlRaw(user_id_query, message_name).Select(abc => abc.Id).ToList();
+            var logged_user = _db.Podatki.Find(user_id[0]);
+            var message = logged_user.Secret;
+
+            //string message_query = "SELECT Secret FROM dbo.Podatki WHERE Name=({0})";
+            //var message = _db.Podatki.FromSqlRaw(message_query, message_name).Select(abc => abc.Secret).ToList();
+
+            Debug.WriteLine($"SECRET MESSAGE of user {message_name} is:  {message}");
+            //IEnumerable<Podatki> objList = _db.Podatki;
+            TempData["mes"] = message;
+
+            return View(logged_user);
+        }
+
+
+        // POST - SECRET
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SecretData(Podatki logged_user)
+        {
+            if (ModelState.IsValid)
+            {
+           
+                TempData["mes"] = logged_user.Secret; 
+                Debug.WriteLine("SECRET-POST ----> logged_user.Id:  " + logged_user.Id);
+                Debug.WriteLine("SECRET-POST ----> logged_user.Name:  " + logged_user.Name);
+                Debug.WriteLine("SECRET-POST ----> logged_user.Secret:  " + logged_user.Secret);
+
+                _db.Podatki.Update(logged_user);
+                _db.SaveChanges();
+                return View(logged_user);
+
+
+            }
+            Debug.WriteLine("Invalid POST-SECRET model.");
+            return View(logged_user);
+        }
+
+
+            public IActionResult MyBackupService()
+        {
             
-            /*
-            var logged_user = _db.Category.Find(TempData["userID"]);
-            logged_user.LastDate = DateTime.Now.ToString();
-            _db.Category.Update(obj);
-            _db.SaveChanges();
-            */
+            string password = "moje geslo";
+            Debug.WriteLine("password: "+password);
+            ViewData["vd0"] = "password: " + password;
+
+            // generate a 128-bit salt using a cryptographically strong random sequence of nonzero values
+            byte[] salt = new byte[128 / 8];
+            using (var rngCsp = new RNGCryptoServiceProvider())
+            {
+                rngCsp.GetNonZeroBytes(salt);
+            }
+            Debug.WriteLine("Salt: " + Convert.ToBase64String(salt));
+            ViewData["vd1"] = "Salt: " + Convert.ToBase64String(salt);
+
+            // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
+            Debug.WriteLine("Hashed: " + hashed);
+            ViewData["vd2"] = "Hashed: " + hashed;
+            
 
             return View();
         }
+
 
 
         public IActionResult Privacy()
@@ -374,6 +483,7 @@ namespace CS_webapp.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

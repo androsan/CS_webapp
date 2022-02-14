@@ -1,6 +1,13 @@
-﻿@model CS_webapp.Models.Category
+﻿@model CS_webapp.Models.BigModel
 
 <form method="post" asp-action="Create">
+    <!--
+    <input asp-for="Category.ResetDate" type="hidden" />
+    <input asp-for="Category.LastDate" type="hidden" />
+    -->
+    <input asp-for="Podatki.Name" type="hidden"/>
+    
+    
      <div class="border p-3">
          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
          
@@ -12,22 +19,22 @@
              <div class="col-8">
                  <div class="form-group row">
                      <div class="col-4">
-                         <label asp-for="Name"></label>
+                         <label asp-for="Category.Name"></label>
                      </div>
                      <div class="col-8">
-                         <input asp-for="Name" id="NA" class="form-control"/>
+                         <input asp-for="Category.Name" id="NA" class="form-control"/>
                          <label>@TempData["user_taken_error"]</label>
-                         <span asp-validation-for="Name" class="text-danger"></span>
+                         <span asp-validation-for="Category.Name" class="text-danger"></span>
                      </div>
                  </div>
 
                  <div class="form-group row">
                      <div class="col-4">
-                     <label asp-for="DisplayOrder"></label>
+                     <label asp-for="Category.DisplayOrder"></label>
                      </div>
                      <div class="col-8">
-                     <input asp-for="DisplayOrder" id="DO" class="form-control"/>
-                     <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+                     <input asp-for="Category.DisplayOrder" id="DO" class="form-control"/>
+                     <span asp-validation-for="Category.DisplayOrder" class="text-danger"></span>
                      </div>
                  </div>
 

@@ -31,6 +31,7 @@
     <!--
     <input asp-for="Item1.Id" type="hidden" />
     <input asp-for="Item1.InitDate" type="hidden" />-->
+
      
     <div class="border p-3">
          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -55,7 +56,7 @@
                          <!--<input asp-for="Category.Name" class="form-control"/>-->
                          <input asp-for="LoginModel.UserName" class="form-control"/>
 
-                         <label>@TempData["user_error"]</label>
+                         <p>@TempData["user_error"]</p>
                          <!--<span asp-validation-for="Item2.UserName" class="text-danger"></span>-->
                          <!--<span asp-validation-for="Item1.Name" class="text-danger"></span>-->
                          <!--<span asp-validation-for="Category.Name" class="text-danger"></span>-->

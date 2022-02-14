@@ -12,19 +12,14 @@ namespace CS_webapp.Models
 		//public string Id { get; set; }
 
 		[DisplayName("Uporabniško ime")]
-		//[Required]
+		[Required]
 		//[Range(1, int.MaxValue, ErrorMessage = "Neveljavno uporabniško ime!")]
 		public string UserName { get; set; }
 
 		[DisplayName("Geslo")]
-		//[Required]
+		[Required]
 		//[Range(1,int.MaxValue,ErrorMessage ="Neveljavno geslo!")]
 		public string Password { get; set; }
-
-		//public string ModDate { get; set; }
-
-		//public string ModDate = DateTime.Now.ToString("HH:mm:ss tt");
-		//Debug.WriteLine(object localDate);
 
 	}
 }
