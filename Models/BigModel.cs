@@ -14,6 +14,7 @@ namespace CS_webapp.Models
 		public LoginModel LoginModel { get; set; }
 		public ResetirajGeslo ResetirajGeslo { get; set; }
 		public Podatki Podatki { get; set; }
+		//public string ajax_variable { get; set; }
 
 	}
 

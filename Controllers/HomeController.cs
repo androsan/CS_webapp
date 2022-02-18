@@ -74,7 +74,6 @@ namespace CS_webapp.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 // Check if username is available
 
                 string _ime = big.Category.Name;
@@ -212,7 +211,7 @@ namespace CS_webapp.Controllers
 
             else
             {
-                TempData["password_error"] = "Passwords doesn't match! Please, enter same passwords..";
+                TempData["password_error"] = "Passwords don't match! Please, enter same passwords..";
                 mod.NewOrderFirst = ""; mod.NewOrderSecond = "";
                 return View(obj);
             }
@@ -244,9 +243,12 @@ namespace CS_webapp.Controllers
 
 
         // GET - DELETE
-        public IActionResult Delete(int? id)
+        public IActionResult Delete(int? id, string ajax_variable)
         {
-            if (id == null || id == 0) { return NotFound(); }
+            Debug.WriteLine("I've found this guy wondering around GET-DELETE:  " + ajax_variable);
+            TempData["ajax_variable"] = ajax_variable;
+
+            if ( id == null || id == 0) { return NotFound(); }
 
             var obj = _db.Category.Find(id);
             if (obj == null) { return NotFound(); }
@@ -254,20 +256,25 @@ namespace CS_webapp.Controllers
             return View(obj);
         }
 
+
         // POST - DELETE
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int? id)
         {
-            var obj_cat = _db.Category.Find(id);
-            var obj_pod = _db.Podatki.Find(id);
+            //Debug.WriteLine("ajax_variable as argument POST-DELETE:  "+ajax_variable);
+            //Debug.WriteLine("ajax_variable as TempData POST-DELETE:  " + TempData["ajax_variable"]);
+
+                var obj_cat = _db.Category.Find(id);
+                var obj_pod = _db.Podatki.Find(id);
 
 
-            _db.Category.Remove(obj_cat);
-            _db.Podatki.Remove(obj_pod);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+                _db.Category.Remove(obj_cat);
+                _db.Podatki.Remove(obj_pod);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
         }
+
 
         // GET - LOGIN  
         public IActionResult Login()
@@ -436,6 +443,7 @@ namespace CS_webapp.Controllers
 
                 _db.Podatki.Update(logged_user);
                 _db.SaveChanges();
+                //logged_user.Secret = "";
                 return View(logged_user);
 
 

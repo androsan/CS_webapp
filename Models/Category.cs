@@ -37,6 +37,8 @@ namespace CS_webapp.Models
 		public Podatki Podatki { get; set; }
 		*/
 
+		//public string ajax_variable { get; set; }
+
 
 	}
 

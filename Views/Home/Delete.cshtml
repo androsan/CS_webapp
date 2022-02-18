@@ -1,7 +1,8 @@
 ﻿@model CS_webapp.Models.Category
-
-<form method="post" asp-action="DeletePost" onSubmit="DeleteUser('@Model.Name')">
+<body>
+<form id="DeleteForm" method="post" asp-action="DeletePost" >   <!--onSubmit="DeleteUser('@Model.Name')">-->
     <input asp-for="Id" type="hidden" />
+
      <div class="border p-3">
          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
          
@@ -40,7 +41,8 @@
                   <div class="form-group row">
                       <div class="col-8 offset-4 row">
                           <div class="col">
-                              <input type="submit" class="btn btn-info w-100 btn-danger" value="Izbriši"/>
+                              <!--<input type="submit" class="btn btn-info w-100 btn-danger" value="Izbriši"/>-->
+                              <input type="button" class="btn btn-info w-100 btn-danger" onclick="DeleteUser('@Model.Name')" value="Izbriši">
                           </div>
                           <div class="col">
                               <a asp-action="Index" class="btn btn-success w-100"><i class="fas fa-arrow-left"></i> &nbsp; Category List</a>
@@ -51,23 +53,60 @@
          </div>
      </div>
 
+     <p id="delete_messenger"></p>
+
 </form>
 
-<!--<button id="delete_object_btn" onclick="DeleteUser('@Model.Name')">Delete File</button>-->
+<!--<button id="delete_object_btn" onclick="DeleteUser('@Model.Name')">Post me variable by Ajax!</button>-->
 
 @section Scripts{
     @{ <partial name="_ValidationScriptsPartial" />}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
     
     function DeleteUser(ime){
         
 	    var result = confirm("Ali res želiš izbrisati uporabnika:  "+ime+" in njegove podatke iz vseh registrov?");
-	    if (result) {
-		    console.log("Uporabnik ",ime," in vsi njegovi podatki so bili uspešno odstranjeni..");
-		    } 
-    
-        //alert("I will only say hello on view.");
-	    }
+        //console.log("result: "+result+"   type:  "+typeof result);
+        var ajax_variable;
+       // var objekt = { "stringbool": stringbool };
+
+	    if (result)
+        {ajax_variable = "delete_user";
+        document.getElementById("DeleteForm").submit();
+        
+        }
+        else
+        {ajax_variable = "do_not_delete_user";}
+
+        //var ajax_object = {ajax_variable: ajax_variable};
+
+        
+        @*
+        $.ajax({
+                 type: "POST",
+                 url: '@Url.Action("Delete", "Home")',
+                 //dataType: "html",
+                 //contentType: "application/json",
+                 data: ajax_object,
+                 success: function (data) {
+                     //if (data == "Success") { 
+                       //$("#delete_messenger").html(data);
+                       //alert('Your data updated. Posted variable stringbool: '+data);
+                       console.log("Uporabnik ",ime," in vsi njegovi podatki so bili uspešno odstranjeni..");
+                       //window.location.href = "/Home/Index";
+                    //} else {
+                      // alert("Boolean was NOT sent! Something went wrong :(");
+                 //}
+                 },
+                 error: function (jqXHR, textStatus) {
+                     alert(textStatus);
+                 }
+        });
+        *@
+	}
     </script>
 
 } 
+
+</body>
