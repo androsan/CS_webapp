@@ -8,6 +8,31 @@ namespace CS_webapp.Migrations
         {
  
             migrationBuilder.CreateTable(
+                name: "Category",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false).Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayOrder = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InitDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ResetDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Category", x => x.Id);
+                    /*
+                    table.ForeignKey(
+                        name: "FK_Podatki_Category_Id",
+                        column: x => x.Id,
+                        principalTable: "Category",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    */
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Podatki",
                 columns: table => new
                 {
@@ -29,8 +54,10 @@ namespace CS_webapp.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            /*
             migrationBuilder.DropTable(
                 name: "Podatki");
+            */
 
          
         }

@@ -8,8 +8,6 @@ namespace CS_webapp.Models
 {
 	public class LoginModel
 	{
-		//[Key]
-		//public string Id { get; set; }
 
 		[DisplayName("Uporabniško ime")]
 		[Required]

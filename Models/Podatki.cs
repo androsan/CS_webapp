@@ -11,8 +11,8 @@ namespace CS_webapp.Models
 	public class Podatki
 	{
 
-		[Key]
-		public int Id { get; set; }
+		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
 
 		[DisplayName("Uporabnik")]
 		public string Name { get; set; }

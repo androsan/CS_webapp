@@ -50,7 +50,8 @@ namespace CS_webapp.Migrations
             modelBuilder.Entity("CS_webapp.Models.Podatki", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
