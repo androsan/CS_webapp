@@ -166,6 +166,9 @@ namespace CS_webapp.Controllers
             {
                 Debug.WriteLine("Veljavnost modela pri POST-CREATE:  " + ModelState.IsValid);
                 Debug.WriteLine("Dodano za test Git UI SourceTree..");
+                
+                string testString = "This is a test string for testing SourceTree git UI pull request..";
+                
                 return View(big.Category);
             }
         }
